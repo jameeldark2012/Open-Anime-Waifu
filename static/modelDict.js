@@ -74,6 +74,22 @@ modelDict = [
         }
     },
     {
+        "name": "yuri_0013",
+        "description": "Gray-Haired Girl.",
+        "url": "/live2d-models/yuri_0013/yuri_0013.model3.json",
+        "kScale": 0.00015,
+        "kXOffset": 550,
+        "idleMotionGroupName": "Idle",
+        "emotionMap": {
+            "neutral": 0,
+            "disgust": 1,
+            "fear": 1,
+            "joy": 0,
+            "sadness": 1,
+            "blush": 0
+        }
+    },
+    {
         "name": "mashiro",
         "description": "Mashiro Shiina",
         "url": "https://cdn.jsdelivr.net/gh/artulloss/live2d/Sakurasou/mashiro/ryoufuku.model.json",

@@ -296,7 +296,7 @@ class OpenLLMVTuberMain:
         else:
             return input("\n>> ")
     
-    def pre_process_response(self , response):
+    def _pre_process_response(self , response):
         """
         Get the TTS character block list that's specified from the config file
         And removes the prohibited characters from the response
@@ -335,7 +335,7 @@ class OpenLLMVTuberMain:
                 print(char, end="")
                 full_response += char
             print("\n")
-            clean_response = self.pre_process_response(full_response)
+            clean_response = self._pre_process_response(full_response)
             filename = self._generate_audio_file(full_response, "temp")
 
             if self._continue_exec_flag.is_set():
@@ -441,7 +441,7 @@ class OpenLLMVTuberMain:
                                 )
                                 print(f"Translated: {tts_target_sentence}")
 
-                            clean_response = self.pre_process_response(tts_target_sentence)
+                            clean_response = self._pre_process_response(tts_target_sentence)
                             audio_filepath = self._generate_audio_file(
                                 clean_response, file_name_no_ext=f"temp-{index}"
                             )
@@ -461,7 +461,7 @@ class OpenLLMVTuberMain:
                     if not self._continue_exec_flag.is_set():
                         raise InterruptedError("Producer interrupted")
                     print("\n")
-                    clean_response = self.pre_process_response(sentence_buffer)
+                    clean_response = self._pre_process_response(sentence_buffer)
                     audio_filepath = self._generate_audio_file(
                         clean_response, file_name_no_ext=f"temp-{index}"
                     )
