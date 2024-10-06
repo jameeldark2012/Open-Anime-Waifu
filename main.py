@@ -295,6 +295,22 @@ class OpenLLMVTuberMain:
             return self.asr.transcribe_with_local_vad()
         else:
             return input("\n>> ")
+    
+    def pre_process_response(self , response):
+        """
+        Get the TTS character block list that's specified from the config file
+        And removes the prohibited characters from the response
+
+        Returns:
+        -str the clean response
+        """
+        block_list = self.config["TTS_block_list"]
+        # Create a translation table where all block_list characters are mapped to None
+        translation_table = str.maketrans('', '', ''.join(block_list))
+        # Remove block_list characters from the response
+        cleaned_response = response.translate(translation_table)
+
+        return cleaned_response
 
     def speak(self, chat_completion: Iterator[str]) -> str:
         """
@@ -319,11 +335,12 @@ class OpenLLMVTuberMain:
                 print(char, end="")
                 full_response += char
             print("\n")
+            clean_response = self.pre_process_response(full_response)
             filename = self._generate_audio_file(full_response, "temp")
 
             if self._continue_exec_flag.is_set():
                 self._play_audio_file(
-                    sentence=full_response,
+                    sentence=clean_response,
                     filepath=filename,
                 )
             else:
@@ -424,8 +441,9 @@ class OpenLLMVTuberMain:
                                 )
                                 print(f"Translated: {tts_target_sentence}")
 
+                            clean_response = self.pre_process_response(tts_target_sentence)
                             audio_filepath = self._generate_audio_file(
-                                tts_target_sentence, file_name_no_ext=f"temp-{index}"
+                                clean_response, file_name_no_ext=f"temp-{index}"
                             )
 
                             if not self._continue_exec_flag.is_set():
@@ -443,8 +461,9 @@ class OpenLLMVTuberMain:
                     if not self._continue_exec_flag.is_set():
                         raise InterruptedError("Producer interrupted")
                     print("\n")
+                    clean_response = self.pre_process_response(sentence_buffer)
                     audio_filepath = self._generate_audio_file(
-                        sentence_buffer, file_name_no_ext=f"temp-{index}"
+                        clean_response, file_name_no_ext=f"temp-{index}"
                     )
                     audio_info = {
                         "sentence": sentence_buffer,
